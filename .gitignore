@@ -1,0 +1,10 @@
+# package directories
+node_modules
+swagger
+jspm_packages
+.serverless
+.build
+docker-compose.yaml
+# Serverless directories
+lib
+.webpack
