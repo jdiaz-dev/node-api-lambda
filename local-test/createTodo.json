@@ -3,7 +3,7 @@
     "requestContext":{
         "http":{
             "method": "POST",
-            "path": "/todo"
+            "path": "/todos"
         }
     },
     "headers":{

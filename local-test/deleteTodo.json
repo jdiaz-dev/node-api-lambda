@@ -3,14 +3,14 @@
     "requestContext":{
         "http":{
             "method": "DELETE",
-            "path": "/todo"
+            "path": "/todos"
         }
     },
     "headers":{
         "Content-Type": "application/json"
     },
     "pathParameters":{
-        "id": "983cc23f-191b-4afe-a0c2-d4e1f9a3a543"
+        "id": "206b5944-e0d7-4142-9032-085e55ebe7cb"
     },
     "body":"{}"
 }

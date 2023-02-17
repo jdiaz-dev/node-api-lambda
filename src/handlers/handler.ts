@@ -9,7 +9,6 @@ export const handler = async function (event) {
   const { method, path } = event.requestContext.http;
   const { pathParameters } = event;
   const domainPath = path.split("/")[1];
-
   let response;
   switch (true) {
     case method === "POST" && domainPath === todoPath:
