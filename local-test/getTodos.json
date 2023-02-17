@@ -1,0 +1,13 @@
+{
+    "resource": "/",
+    "requestContext":{
+        "http":{
+            "method": "GET",
+            "path": "/todo"
+        }
+    },
+    "headers":{
+        "Content-Type": "application/json"
+    },
+    "body":"{}"
+}

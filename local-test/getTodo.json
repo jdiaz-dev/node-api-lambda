@@ -1,0 +1,16 @@
+{
+    "resource": "/",
+    "requestContext":{
+        "http":{
+            "method": "GET",
+            "path": "/todo"
+        }
+    },
+    "headers":{
+        "Content-Type": "application/json"
+    },
+    "pathParameters":{
+        "id": "983cc23f-191b-4afe-a0c2-d4e1f9a3a543"
+    },
+    "body":"{}"
+}

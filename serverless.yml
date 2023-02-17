@@ -1,84 +1,68 @@
 service: test-node-aws
 frameworkVersion: '3'
-# memorySize: 1500
-# architecture: x86_64
 
 provider:
   name: aws
   runtime: nodejs16.x
-  iamRoleStatements:  # to proive access to write in the table
+  apiGateway:
+    shouldStartNameWithService: true
+    description: REST API ${self:service}
+
+  iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:*
       Resource:
         - arn:aws:dynamodb:us-east-1:876614818336:table/TodoList
-  httpApi:
-    id: xxxx
 
 functions:
   todo:
-    handler: src/handlers/mainHandler.mainHandler
+    handler: src/handlers/handler.handler
     events:
       - httpApi:
           path: /todos
           method: post
-          # responses:
-          #   201:
-          #     message: "sucess"
+          bodyType: "TodoItem"
+          responses:
+            201:
+              description: 'successful API response'
+              message: "Item was created sucessfully"
+              bodyType: "TodoItem"
       - httpApi:
           path: /todos
           method: get
+          responses:
+            200:
+              description: 'successful API response'
+              message: "Item was obtained sucessfully"
+              bodyType: "TodoItems"
       - httpApi:
           path: /todos/{id}
           method: get
+          responses:
+            200:
+              description: 'successful API response'
+              message: "Item was obtained sucessfully"
+              bodyType: "TodoItem"
       - httpApi:
           path: /todos/{id}
-          method: update
+          method: put
+          responses:
+            201:
+              description: 'successful API response'
+              message: "Item was updated sucessfully"
+              bodyType: "TodoItem"
       - httpApi:
           path: /todos/{id}
           method: delete
-          # documentation:
-          #   summary: "Create User"
-          #   description: "Creates a user and then sends a generated password email"
-          #   requestBody:
-          #     description: "A user information object"
-          #   requestModels:
-          #     application/json: "PutDocumentRequest"
-          #   pathParams:
-          #     - name: "username"
-          #       description: "The username for a user to create"
-          #       schema:
-          #         type: "string"
-          #         pattern: "^[-a-z0-9_]+$"
-          #   queryParams:
-          #     - name: "membershipType"
-          #       description: "The user's Membership Type"
-          #       schema:
-          #         type: "string"
-          #         enum:
-          #           - "premium"
-          #           - "standard"
-          #   cookieParams:
-          #     - name: "SessionId"
-          #       description: "A Session ID variable"
-          #       schema:
-          #         type: "string"
-          #   methodResponses:
-          #     - statusCode: 201
-          #       responseBody:
-          #         description: "A user object along with generated API Keys"
-          #       responseModels:
-          #         application/json: "PutDocumentResponse"
-          #     - statusCode: 500
-          #       responseBody:
-          #         description: "An error message when creating a new user"
-          #       responseModels:
-          #         application/json: "ErrorResponse"
-
+          responses:
+            200:
+              description: 'successful API response'
+              message: "Item was removed sucessfully"
 
 resources:
   Resources:
-    TodoList: # -------- resource name
+    TodoList:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: TodoList
@@ -95,25 +79,8 @@ plugins:
   - serverless-offline
   - serverless-plugin-typescript
 
-
 custom:
   serverlessPluginTypescript:
     tsConfigFileLocation: './tsconfig.json'
-
-#   autoswagger:
-#     title: 'string'
-#     apiType: 'httpApi'
-#     generateSwaggerOnDeploy: true
-#     # typefiles: ['./src/types/typefile1.d.ts', './src/subfolder/helper.d.ts']
-#     swaggerFiles: ['./lib/doc/createTodo.json']
-#     swaggerPath: 'string'
-#     # apiKeyHeaders: ['Authorization', 'anyOtherName']
-#     useStage: true | false
-#     basePath: '/string'
-#     host: 'http://localhost:3005'
-#     schemes: ['http', 'https', 'ws', 'wss']
-#     excludeStages: ['production', 'anyOtherStage']
-#     # lambdaAuthorizer: ${self:custom.myAuthorizer}
-#     useRedirectUI: true | false
-
-# https://www.npmjs.com/package/serverless-auto-swagger
+  autoswagger:
+    typeFiles: ['./src/types/api-types.d.ts']

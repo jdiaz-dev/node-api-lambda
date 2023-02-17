@@ -1,0 +1,14 @@
+{
+    "resource": "/",
+    "requestContext":{
+        "http":{
+            "method": "POST",
+            "path": "/todo"
+        }
+    },
+    "headers":{
+        "Content-Type": "application/json"
+    },
+
+    "body":"{\"taskName\":\"hhh\",\"dueDate\":\"asffffffff\",\"notes\":\"asdf\",\"status\":\"not started\"}"
+}

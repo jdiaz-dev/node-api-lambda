@@ -6,9 +6,10 @@ import { transpileSchema } from "@middy/validator/transpile";
 import httpErrorHandler from "@middy/http-error-handler";
 
 import { updateItemSchema } from "../helpers/validators.js";
-import { TodoListTable } from "../helpers/consts.js";
+import { ErrorMessages, SucessMessages, TodoListTable } from "../helpers/consts.js";
 import { ddbDocClient } from "../core/db.js";
 import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
+import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 const updateTodoItem = async (event) => {
   const body = event.body;
@@ -30,32 +31,31 @@ const updateTodoItem = async (event) => {
     dynamicUpdate.ExpressionAttributeValues[`:${key}`] = item;
   });
 
+  const command = new UpdateCommand({
+    TableName: TodoListTable,
+    Key: {
+      id,
+    },
+    ...dynamicUpdate,
+    ReturnValues: "ALL_NEW",
+  });
   try {
-    const res = await ddbDocClient.send(
-      new UpdateItemCommand({
-        TableName: TodoListTable,
-        Key: {
-          id,
-        },
-        ...dynamicUpdate,
-        ReturnValues: "ALL_NEW",
-      })
-    );
-
+    const res = await ddbDocClient.send(command as any as UpdateItemCommand);
     return {
-      statusCode: 201,
-      message: "success",
-      body: res,
+      status: 201,
+      message: SucessMessages.UPDATED,
+      body: JSON.stringify(res.Attributes),
+
     };
   } catch (error) {
     return {
-      statusCode: 400,
-      message: "It was not possible to update item.",
+      status: 500,
+      message: ErrorMessages.INTERNAL
     };
   }
 };
 
-export const updateTodoItemHandlder: any = middy(updateTodoItem).use([
+export const updateTodoItemHandlder = middy(updateTodoItem).use([
   httpHeaderNormalizer(),
   jsonBodyParser(),
   validator({
@@ -64,4 +64,4 @@ export const updateTodoItemHandlder: any = middy(updateTodoItem).use([
     }),
   }),
   httpErrorHandler(),
-]);
+]) as Function;
